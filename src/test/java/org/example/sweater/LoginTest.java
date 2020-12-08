@@ -15,5 +15,5 @@ public class LoginTest {
     private MockMvc mockMvc;
 
     @Test
-    public void
+    public void test() {}
 }
