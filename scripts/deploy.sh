@@ -2,11 +2,11 @@
 
 #mvn -f pom.xml clean package -U
 
-echo 'Copy files...'
+#echo 'Copy files...'
 
-scp target/sweater-1.0-SNAPSHOT.jar ad@192.168.0.89:/home/ad/
+#scp target/sweater-1.0-SNAPSHOT.jar ad@192.168.0.89:/home/ad/
 
-echo 'Restart server...'
+#echo 'Restart server...'
 
 #ssh -tt -i ~/.ssh/id_rsa ad@192.168.0.89 << EOF
 #
@@ -15,4 +15,4 @@ echo 'Restart server...'
 #
 #EOF
 
-echo 'Bye'
+#echo 'Bye'
