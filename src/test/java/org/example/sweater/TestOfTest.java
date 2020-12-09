@@ -1,10 +1,9 @@
 package org.example.sweater;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
-/**
- * TODO: add documentation
- */
+@SpringBootTest
 public class TestOfTest {
 
     @Test

@@ -3,6 +3,7 @@ package org.example.sweater.controller;
 import org.example.sweater.domain.Message;
 import org.example.sweater.domain.User;
 import org.example.sweater.repos.MessageRepo;
+import org.example.sweater.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -28,16 +29,19 @@ import java.util.Map;
 import java.util.UUID;
 
 @Controller
-public class MainController {
+public class MessageController {
+
 
     private final MessageRepo messageRepo;
+    private final MessageService messageService;
 
     @Value("${upload.path}")
     private String uploadPath;
 
     @Autowired
-    public MainController(MessageRepo messageRepo) {
+    public MessageController(MessageRepo messageRepo, MessageService messageService) {
         this.messageRepo = messageRepo;
+        this.messageService = messageService;
     }
 
     @GetMapping("/")
@@ -48,13 +52,9 @@ public class MainController {
     @GetMapping("/main")
     public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model,
                        @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Message> page;
 
-        if (filter == null || filter.isEmpty()) {
-            page = messageRepo.findAll(pageable);
-        } else {
-            page = messageRepo.findByTag(filter, pageable);
-        }
+        Page<Message> page = messageService.messageList(pageable, filter);
+
 
         model.addAttribute("page", page);
         model.addAttribute("url", "/main");
@@ -67,8 +67,11 @@ public class MainController {
                       @Valid Message message,
                       BindingResult bindingResult,
                       @RequestParam("file") MultipartFile file,
-                      Model model) throws IOException {
+                      Model model,
+                      @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) throws IOException {
         message.setAuthor(user);
+
+        Page<Message> page = messageService.messageListAll(pageable);
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errorsMap = ControllerUtil.getErrors(bindingResult);
@@ -78,8 +81,11 @@ public class MainController {
         } else {
             saveFile(message, file);
             model.addAttribute("message", null);
+
             messageRepo.save(message);
         }
+        model.addAttribute("url", "/main");
+        model.addAttribute("page", page);
 
         model.addAttribute("messages", messageRepo.findAll());
         return "/main";
@@ -100,18 +106,23 @@ public class MainController {
         }
     }
 
-    @GetMapping("/user-messages/{user}")
+    @GetMapping("/user-messages/{author}")
     public String userMessages(@AuthenticationPrincipal User currentUser,
-                               @PathVariable User user,
+                               @PathVariable User author,
                                Model model,
-                               @RequestParam(required = false) Message message) {
-        model.addAttribute("userChannel", user);
-        model.addAttribute("subscriptionsCount", user.getSubscriptions().size());
-        model.addAttribute("subscribersCount", user.getSubscribers().size());
-        model.addAttribute("isSubscriber", user.getSubscribers().contains(currentUser));
-        model.addAttribute("messages", user.getMessages());
+                               @RequestParam(required = false) Message message,
+                               @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<Message> page = messageService.messageListForUser(pageable, author);
+
+        model.addAttribute("userChannel", author);
+        model.addAttribute("subscriptionsCount", author.getSubscriptions().size());
+        model.addAttribute("subscribersCount", author.getSubscribers().size());
+        model.addAttribute("isSubscriber", author.getSubscribers().contains(currentUser));
+        model.addAttribute("page", page);
         model.addAttribute("message", message);
-        model.addAttribute("isCurrentUser", currentUser.equals(user));
+        model.addAttribute("isCurrentUser", currentUser.equals(author));
+        model.addAttribute("url", "/user-messages/" + author.getId());
         return "userMessages";
     }
 
@@ -137,8 +148,6 @@ public class MainController {
 
         return "redirect:/user-messages/" + user;
     }
-
-
 
 
 }
