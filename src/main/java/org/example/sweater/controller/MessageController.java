@@ -113,7 +113,7 @@ public class MessageController {
                                @RequestParam(required = false) Message message,
                                @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<Message> page = messageService.messageListForUser(pageable, author);
+        Page<Message> page = messageService.messageListForUser(pageable, currentUser, author);
 
         model.addAttribute("userChannel", author);
         model.addAttribute("subscriptionsCount", author.getSubscriptions().size());

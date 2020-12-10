@@ -15,7 +15,7 @@ public class MessageService {
     private MessageRepo messageRepo;
 
     public Page<Message> messageList(Pageable pageable, String filter) {
-        Page<Message> page;
+
         if (filter == null || filter.isEmpty()) {
             return messageRepo.findAll(pageable);
         } else {
@@ -24,8 +24,8 @@ public class MessageService {
 
     }
 
-    public Page<Message> messageListForUser(Pageable pageable, User author) {
-        return messageRepo.findByUser(pageable, author);
+    public Page<Message> messageListForUser(Pageable pageable, User currentUser, User author) {
+        return messageRepo.findByUser(pageable, author);// currentUser,
     }
     public Page<Message> messageListAll(Pageable pageable) {
         return messageRepo.findAll(pageable);

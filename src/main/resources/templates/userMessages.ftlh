@@ -41,7 +41,7 @@
             </div>
         </div>
     </div>
-    <#if isCurrentUser>
+    <#if isCurrentUser && message??>
         <#include "parts/messageEdit.ftlh"/>
     </#if>
 
