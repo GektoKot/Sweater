@@ -71,7 +71,9 @@ public class MessageController {
                       BindingResult bindingResult,
                       @RequestParam("file") MultipartFile file,
                       Model model,
-                      @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) throws IOException {
+                      @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable,
+                      RedirectAttributes attributes,
+                      @RequestHeader(required = false) String referer) throws IOException {
         message.setAuthor(user);
 
         Page<MessageDto> page = messageService.messageList(pageable, "", user);
@@ -91,7 +93,7 @@ public class MessageController {
         model.addAttribute("page", page);
 
 //        model.addAttribute("messages", messageRepo.findAll());
-        return "/main";
+        return getUriComponents(attributes, referer);
     }
 
     private void saveFile(@Valid Message message, @RequestParam("file") MultipartFile file) throws IOException {
