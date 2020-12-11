@@ -32,9 +32,17 @@
 
 
                     <#if message.author.id == currentUserId>
-                        <a class="col btn btn-info" href="/user-messages/${message.author.id}?message=${message.id}">
-                            Peredelat'
+                        <a class="col btn btn-info mr-1" href="/user-messages/${message.author.id}/edit?message=${message.id}">
+                            Reconstruct
                         </a>
+                        <form action="/user-messages/delete" method="post">
+                            <input type="hidden" name="messageId" value="${message.id}">
+                            <input type="hidden" name="_csrf" value="${_csrf.token}">
+                            <button class="col btn btn-info" type="submit"> Destroy</button>
+                        </form>
+<#--                        <a class="col btn btn-info" href="/user-messages/${message.author.id}/delete">-->
+<#--                            Destroy-->
+<#--                        </a>-->
                     </#if>
                 </div>
             </div>

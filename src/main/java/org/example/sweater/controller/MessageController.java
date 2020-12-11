@@ -129,7 +129,7 @@ public class MessageController {
         return "userMessages";
     }
 
-    @PostMapping("/user-messages/{user}")
+    @PostMapping("/user-messages/{user}/edit")
     public String updateMessage(@AuthenticationPrincipal User currentUser,
                                 @PathVariable Integer user,
                                 @RequestParam("id") Message message,
@@ -152,6 +152,30 @@ public class MessageController {
         return "redirect:/user-messages/" + user;
     }
 
+    @PostMapping("/user-messages/delete")
+    public String deleteMessage(@AuthenticationPrincipal User currentUser,
+                                @RequestParam("messageId") Message message,
+                                RedirectAttributes attributes,
+                                @RequestHeader(required = false) String referer) {
+
+        if (message.getAuthor().equals(currentUser)) {
+            messageRepo.delete(message);
+        }
+
+        return getUriComponents(attributes, referer);
+
+
+    }
+
+    private String getUriComponents(RedirectAttributes attributes, @RequestHeader(required = false) String referer) {
+        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(referer).build();
+
+        uriComponents.getQueryParams()
+                .forEach(attributes::addAttribute);
+
+        return "redirect:" + uriComponents.getPath();
+    }
+
 
     @GetMapping("/messages/{message}/like")
     public String like(@AuthenticationPrincipal User currentUser,
@@ -167,12 +191,7 @@ public class MessageController {
             likes.add(currentUser);
         }
 
-        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(referer).build();
-
-        uriComponents.getQueryParams()
-                .forEach(attributes::addAttribute);
-
-        return "redirect:" + uriComponents.getPath();
+        return getUriComponents(attributes, referer);
     }
 
 
