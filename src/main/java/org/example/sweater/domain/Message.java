@@ -34,6 +34,8 @@ public class Message {
     inverseJoinColumns = {@JoinColumn(name = "user_id")})
     private Set<User> likes = new HashSet<>();
 
+//    private boolean isLiked;
+
     public Message() {
     }
 
@@ -43,6 +45,13 @@ public class Message {
         this.tag = tag;
     }
 
+//    public boolean isLiked() {
+//        return isLiked;
+//    }
+//
+//    public void setLiked(boolean liked) {
+//        isLiked = liked;
+//    }
 
     public Set<User> getLikes() {
         return likes;

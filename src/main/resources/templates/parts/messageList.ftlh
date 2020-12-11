@@ -20,13 +20,13 @@
                 <div class="row">
                     <a class="col align-self-center" href="/user-messages/${message.author.id}">${message.getAuthorName()}</a>
                     <a class="col align-self-center" href="#">
-<#--                        <#if message.isLiked>-->
-                        <#if true>
-                            <i class="fas fa-award"></i>
+                        <#if message.getLiked()>
+<#--                        <#if true>-->
+                            <i class="fab fa-accessible-icon"></i>
                         <#else >
-                            <i class="fal fa-award"></i>
+                            <i class="fas fa-award"></i>
                         </#if>
-<#--                        ${message.likes}-->
+                        ${message.getLikes()}
 
                     </a>
 

@@ -1,5 +1,6 @@
 package org.example.sweater.domain;
 
+import org.example.sweater.domain.dto.MessageDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -39,7 +40,7 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Message> messages;
+    private Set<Message> messages = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "user_subscriptions",
@@ -52,6 +53,7 @@ public class User implements UserDetails {
             joinColumns = { @JoinColumn(name = "subscriber_id")},
             inverseJoinColumns = { @JoinColumn(name = "channel_id")})
     private Set<User> subscriptions = new HashSet<>();
+
 
     @Override
     public boolean equals(Object o) {

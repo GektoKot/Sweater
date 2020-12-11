@@ -5,7 +5,7 @@ import org.example.sweater.domain.User;
 
 public abstract class MessageHelper {
 
-    public static String getAuthorName(User user) {
-        return user != null ? user.getUsername() : "neizvestna";
+    public static String getAuthorName(User author) {
+        return author != null ? author.getUsername() : "neizvestna";
     }
 }

@@ -24,6 +24,16 @@ public class MessageDto {
         this.isLiked = isLiked;
     }
 
+//    public MessageDto(Message message, int likes, User user) {
+//        this.id = message.getId();
+//        this.tag = message.getTag();
+//        this.text = message.getText();
+//        this.author = message.getAuthor();
+//        this.filename = message.getFilename();
+//        this.likes = likes;
+//        this.isLiked = message.getLikes().contains(user);
+//    }
+
     public String getAuthorName() {
         return MessageHelper.getAuthorName(author);
     }

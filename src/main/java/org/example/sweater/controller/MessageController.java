@@ -2,6 +2,7 @@ package org.example.sweater.controller;
 
 import org.example.sweater.domain.Message;
 import org.example.sweater.domain.User;
+import org.example.sweater.domain.dto.MessageDto;
 import org.example.sweater.repos.MessageRepo;
 import org.example.sweater.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +52,10 @@ public class MessageController {
 
     @GetMapping("/main")
     public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model,
-                       @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+                       @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable,
+                       @AuthenticationPrincipal User user) {
 
-        Page<Message> page = messageService.messageList(pageable, filter);
+        Page<MessageDto> page = messageService.messageList(pageable, filter, user);
 
 
         model.addAttribute("page", page);
@@ -71,7 +73,7 @@ public class MessageController {
                       @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) throws IOException {
         message.setAuthor(user);
 
-        Page<Message> page = messageService.messageListAll(pageable);
+        Page<MessageDto> page = messageService.messageList(pageable, "", user);
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errorsMap = ControllerUtil.getErrors(bindingResult);
@@ -87,11 +89,11 @@ public class MessageController {
         model.addAttribute("url", "/main");
         model.addAttribute("page", page);
 
-        model.addAttribute("messages", messageRepo.findAll());
+//        model.addAttribute("messages", messageRepo.findAll());
         return "/main";
     }
 
-    private void saveFile(Message message, MultipartFile file) throws IOException {
+    private void saveFile(@Valid Message message,@RequestParam("file") MultipartFile file) throws IOException {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             File uploadDir = new File(uploadPath);
 
@@ -113,7 +115,7 @@ public class MessageController {
                                @RequestParam(required = false) Message message,
                                @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<Message> page = messageService.messageListForUser(pageable, currentUser, author);
+        Page<MessageDto> page = messageService.messageListForUser(pageable, currentUser, author);
 
         model.addAttribute("userChannel", author);
         model.addAttribute("subscriptionsCount", author.getSubscriptions().size());
@@ -148,6 +150,8 @@ public class MessageController {
 
         return "redirect:/user-messages/" + user;
     }
+
+
 
 
 }
