@@ -19,12 +19,12 @@
             <div style="background-color: lightblue" class="card-footer text-muted container">
                 <div class="row">
                     <a class="col align-self-center" href="/user-messages/${message.author.id}">${message.getAuthorName()}</a>
-                    <a class="col align-self-center" href="#">
+                    <a class="col align-self-center" href="/messages/${message.id}/like">
                         <#if message.getLiked()>
 <#--                        <#if true>-->
-                            <i class="fab fa-accessible-icon"></i>
-                        <#else >
                             <i class="fas fa-award"></i>
+                        <#else >
+                            <i class="fab fa-accessible-icon"></i>
                         </#if>
                         ${message.getLikes()}
 
